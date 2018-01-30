@@ -44,6 +44,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 
 def main():
+    avgs = np.array([])
     random.seed(64)
     pop = toolbox.population(n=300)
     CXPB, MUTPB, NGEN = 0.5, 0.2, 200
@@ -92,6 +93,7 @@ def main():
         print(" Max %s" % max(fits))
         print(" Avg %s" % mean)
         print(" std %s" % std)
+        avgs = np.append(avgs, mean)
 
     print("-- End of (successful) evolution --")
     best_ind = tools.selBest(pop, 1)[0]
@@ -100,8 +102,9 @@ def main():
     best_ind_img = np.array(best_ind)
     best_ind_img = best_ind_img.reshape((40, 30))
 
-    plt.imshow(best_ind_img, cmap='gray')
-    plt.show()
+    # plt.imshow(best_ind_img, cmap='gray')
+    # plt.show()
+    plt.plot(avgs)
 
 
 if __name__  == "__main__":
