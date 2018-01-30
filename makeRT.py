@@ -38,7 +38,7 @@ def evalOneMax(individual):
 
 
 toolbox.register("evaluate", evalOneMax)
-toolbox.register("mate", tools.cxTwoPoints)
+toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
@@ -103,8 +103,8 @@ def main():
     best_ind_img = best_ind_img.reshape((40, 30))
 
     # plt.imshow(best_ind_img, cmap='gray')
-    # plt.show()
     plt.plot(avgs)
+    plt.show()
 
 
 if __name__  == "__main__":
