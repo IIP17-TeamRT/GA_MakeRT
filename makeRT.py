@@ -15,11 +15,11 @@ def evalOneMax(individual):
     return hitpoint,
 
 
-def doGT(whichcx):
+def doGT(name, whichcx):
     toolbox.register("mate", whichcx)
     random.seed(64)
     pop = toolbox.population(n=300)
-    CXPB, MUTPB, NGEN = 0.5, 0.2, 200
+    CXPB, MUTPB, NGEN = 0.9, 0.2, 200
 
     print("Start of evolution")
 
@@ -70,19 +70,29 @@ def doGT(whichcx):
     print("-- End of (successful) evolution --")
     best_ind = tools.selBest(pop, 1)[0]
     print("Best individual is %s %s" % (best_ind,  best_ind.fitness.values))
+    graph.plot(avgs, label=name)
 
     best_ind_img = np.array(best_ind)
     best_ind_img = best_ind_img.reshape((40, 30))
-    plt.plot(avgs)
+    return best_ind_img
 
 
 def main():
-    cxs = [tools.cxTwoPoint, tools.cxOnePoint]
-    [doGT(cx) for cx in cxs]
-    plt.show()
+    names = ["PartialyMatched", "OnePoint", "TwoPoint"]
+    cxs = [tools.cxPartialyMatched, tools.cxOnePoint, tools.cxTwoPoint]
+    rt_finals = [doGT(name, cx) for name, cx in zip(names, cxs)]
+    graph.legend()
+    graph.set_title("Similarity by Generation")
+    graph.set_xlabel("Generation")
+    graph.set_ylabel("Similarity")
+    for num, (rt_final, name) in enumerate(zip(rt_finals, names)):
+        rt_image = results.add_subplot(2, 2, num+2)
+        rt_image.imshow(rt_final, cmap='gray')
+        rt_image.set_title(name)
+    results.show()
 
 
-if __name__  == "__main__":
+if __name__ == "__main__":
     creator.create("FitnessMax", base.Fitness, weights=(1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax)
 
@@ -107,4 +117,8 @@ if __name__  == "__main__":
     toolbox.register("evaluate", evalOneMax)
     toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     toolbox.register("select", tools.selTournament, tournsize=3)
+
+    results = plt.figure()
+    graph = results.add_subplot(2, 2, 1)   # Setting of graph
     main()
+    input()     # in order to prevent window from disapearing
